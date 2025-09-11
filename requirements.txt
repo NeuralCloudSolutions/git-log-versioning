@@ -1,0 +1,2 @@
+GitPython==3.1.45
+spire-doc==13.8.0
