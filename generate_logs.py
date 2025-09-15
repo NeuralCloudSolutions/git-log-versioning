@@ -122,27 +122,40 @@ html_string = """
         <tr>
             <th>Date Range</th>
             <th>Version</th>
-            <th>Features</th>
-            <th>Commit IDs</th>
-            <th>Contributors</th>
+            <th>Description</th>
         </tr>
 """
 
 for group in grouped_commits:
     date_range = f"{group[0].date().strftime('%m/%d/%Y')} to {(group[1].date() - timedelta(days=1)).strftime('%m/%d/%Y')}"
     version = str(currentVersionNumber)
-    features = "* " + "<br>* ".join([commit.message.splitlines()[0] for commit in group[2]])
-    commit_ids = "<br>".join([commit.hexsha[:7] for commit in group[2]])
+    features = [commit.message.splitlines()[0] for commit in group[2]]
+    commit_ids = [commit.hexsha[:7] for commit in group[2]]
     group_contributors = set(commit.author.name for commit in group[2])
-    contributors_str = "<br>".join(sorted(list(group_contributors)))
+    contributors_str = ", ".join(sorted(list(group_contributors)))
+
+    features_ul = "<ul>"
+    for item in features:
+        features_ul += f"<li>{item}</li>"
+    features_ul += "</ul>"
+
+    commit_ul = "<ul>"
+    for item in commit_ids:
+        commit_ul += f"<li>{item}</li>"
+    commit_ul += "</ul>"
 
     html_string += f"""
         <tr>
             <td>{date_range}</td>
             <td>{version}</td>
-            <td>{features}</td>
-            <td>{commit_ids}</td>
-            <td>{contributors_str}</td>
+            <td>
+            <h4>Authors</h4>
+            {contributors_str}
+            <h4>Features</h4>
+            {features_ul}
+            <h4>Commits</h4>
+            {commit_ul}
+            </td>
         </tr>
     """
 
